@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Formuga",
   description: "web formuga",
+  icons: {
+    icon: "/Logo.ico",
+  },
 };
 
 export default function RootLayout({

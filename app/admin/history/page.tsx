@@ -8,10 +8,10 @@ export const metadata: Metadata = {
     },
 }
 
-export default function AdminPage() {
+export default function HistoryPage() {
     return (
         <>
-            <h1 className="text-2xl font-bold mb-4">Dashboard Formuga</h1>
+            <h1 className="text-2xl font-bold mb-4">History</h1>
             <p>Welcome to the admin dashboard. Here you can manage your application.</p>
         </>
     );

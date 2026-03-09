@@ -1,11 +1,62 @@
+'use client';
 
 import { Instagram, Mail, MapPin, ArrowRight, ArrowDown } from 'lucide-react';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { ArrowUp } from 'lucide-react';
 
 export default function LandingPage() {
-  return (
-    <div className="bg-white text-slate-900 selection:bg-slate-900 selection:text-white">
+  const [isVisible, setIsVisible] = useState(false);
 
-      {/* NAVIGATION */}
+  // Logika untuk menampilkan tombol setelah scroll 300px
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.scrollY > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    // Tombol Back to Top
+    <div className="bg-white text-slate-900 selection:bg-slate-900 selection:text-white">
+      <div className='fixed bottom-8 right-8 z-[100]'>
+      <button
+        onClick={scrollToTop}
+        className={`
+          group flex items-center justify-center
+          w-14 h-14 rounded-full 
+          bg-white border border-slate-100 shadow-2xl shadow-slate-200/50
+          hover:bg-slate-900 hover:text-white transition-all duration-500
+          ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}
+        `}
+        aria-label="Back to top"
+      >
+        <div className="relative flex flex-col items-center">
+          <ArrowUp 
+            size={20} 
+            className="group-hover:-translate-y-1 transition-transform duration-300" 
+          />
+          <span className="absolute top-6 text-[8px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            Top
+          </span>
+        </div>
+      </button>
+    </div>
+
+      {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 border-b border-slate-50 bg-white/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
           <span className="font-bold tracking-tighter text-xl">FORMUGA</span>
@@ -17,7 +68,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* HERO */}
+      {/* Hero */}
       <section className="relative h-screen flex flex-col items-center justify-center text-center px-6">
         <div className="space-y-6 max-w-5xl">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
@@ -25,7 +76,7 @@ export default function LandingPage() {
           </div>
           <h1 className="text-6xl md:text-8xl font-black tracking-[calc(-0.05em)] leading-none text-slate-900">
             Formuga <br /> 
-            <span className="text-slate-300 italic font-medium tracking-tight">Genting Utara.</span>
+            <span className="text-slate-300 italic font-light text-5xl tracking-tight">Forum Muda Mudi Genting Utara.</span>
           </h1>
           <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed font-light">
             Merajut Kebersamaan, Menggapai Harapan. <br />

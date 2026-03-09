@@ -127,3 +127,13 @@
     @apply font-sans;
   }
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Opsional: Berikan offset jika Anda memiliki Navbar yang "Fixed" 
+agar judul seksi tidak tertutup navbar saat di-scroll */
+:target {
+  scroll-margin-top: 5rem; /* Sesuaikan dengan tinggi navbar Anda */
+}

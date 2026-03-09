@@ -1,5 +1,14 @@
 import React from 'react';
 import { ArrowLeft, Lock, User, ArrowRight } from 'lucide-react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: "Formuga | Login",
+    description: "Login ke Dashboard Formuga",
+    icons: {
+        icon: "/Logo.ico",
+    },
+}
 
 export default function LoginPage() {
     return (
@@ -35,7 +44,8 @@ export default function LoginPage() {
                     <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
                     <input 
-                        type="text" 
+                        type="text"
+                        name='username'
                         placeholder="Masukkan username"
                         className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-600/10 focus:border-blue-600 transition-all placeholder:text-slate-300"
                     />
@@ -50,6 +60,7 @@ export default function LoginPage() {
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
                     <input 
                         type="password" 
+                        name='password'
                         placeholder="••••••••"
                         className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-600/10 focus:border-blue-600 transition-all placeholder:text-slate-300"
                     />
