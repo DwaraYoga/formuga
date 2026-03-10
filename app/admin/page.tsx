@@ -27,7 +27,7 @@ export default function LoginPage() {
             {/* Header Login */}
             <div className="text-center space-y-2">
                 <div className="font-black text-2xl tracking-tighter mb-8">
-                    FOR<span className="text-blue-600 not-italic">MUGA</span>
+                    FORMUGA
                 </div>
                 <h1 className="text-3xl font-bold tracking-tight">Selamat Datang.</h1>
                 <p className="text-slate-500 font-light">

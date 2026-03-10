@@ -47,8 +47,8 @@ const DashboardNavbar = () => {
                 transition-transform duration-300 ease-in-out
                 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
             `}>
-                <h1 className="hidden lg:block text-2xl font-black mb-10 italic tracking-tighter">
-                    FOR<span className="text-blue-500 not-italic">MUGA</span>
+                <h1 className="hidden lg:block text-2xl font-black mb-10 tracking-tighter">
+                    FORMUGA
                 </h1>
                 
                 <nav className="space-y-1.5">
