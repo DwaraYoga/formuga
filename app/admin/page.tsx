@@ -23,7 +23,7 @@ export default function LoginPage() {
             Ke Landing Page
         </a>
 
-        <div className="w-full max-w-[400px] space-y-10">
+        <div className="w-full max-w-100 space-y-10">
             {/* Header Login */}
             <div className="text-center space-y-2">
                 <div className="font-black text-2xl tracking-tighter mb-8">

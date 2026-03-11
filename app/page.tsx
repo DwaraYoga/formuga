@@ -1,14 +1,51 @@
 'use client';
 
 import { Instagram, Mail, MapPin, ArrowRight, ArrowDown } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 
+// CSS Animations
+const styles = `
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+
+  .animate-fade-in-scale {
+    animation: fadeInScale 0.8s ease-out forwards;
+  }
+
+  .opacity-0 {
+    opacity: 0;
+  }
+`;
+
 export default function LandingPage() {
   const [isVisible, setIsVisible] = useState(false);
+  const [visibleSections, setVisibleSections] = useState<{ [key: string]: boolean }>({});
 
-  // Logika untuk menampilkan tombol setelah scroll 300px
   useEffect(() => {
     const toggleVisibility = () => {
       if (window.scrollY > 300) {
@@ -22,6 +59,35 @@ export default function LandingPage() {
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
+  // Intersection Observer untuk animasi scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const sectionId = entry.target.id;
+            if (sectionId) {
+              setVisibleSections((prev) => ({ ...prev, [sectionId]: true }));
+            }
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px',
+      }
+    );
+
+    // Observe semua section dengan ID
+    const observableSections = document.querySelectorAll('section[id], footer[id]');
+    observableSections.forEach((section) => {
+      observer.observe(section);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -32,7 +98,8 @@ export default function LandingPage() {
   return (
     // Tombol Back to Top
     <div className="bg-white text-slate-900 selection:bg-slate-900 selection:text-white">
-      <div className='fixed bottom-8 right-8 z-[100]'>
+      <style>{styles}</style>
+      <div className='fixed bottom-8 right-8 z-100'>
       <button
         onClick={scrollToTop}
         className={`
@@ -61,7 +128,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
           <span className="font-bold tracking-tighter text-xl">FORMUGA</span>
           <div className="flex gap-8 text-sm font-medium text-slate-500">
-            <a href="#tentang" className="hover:text-black transition">Profil</a>
+            <a href="#sejarah" className="hover:text-black transition">Profil</a>
             <a href="#visi" className="hover:text-black transition">Visi Misi</a>
             <a href="#kontak" className="hover:text-black transition text-slate-900 underline underline-offset-4">Kontak</a>
           </div>
@@ -71,28 +138,32 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative h-screen flex flex-col items-center justify-center text-center px-6">
         <div className="space-y-6 max-w-5xl">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 animate-fade-in-scale"
+               style={{ animationDelay: '0s' }}>
             Official Community Website
           </div>
-          <h1 className="text-6xl md:text-8xl font-black tracking-[calc(-0.05em)] leading-none text-slate-900">
+          <h1 className="text-6xl md:text-8xl font-black tracking-[calc(-0.05em)] leading-none text-slate-900 animate-fade-in-up"
+              style={{ animationDelay: '0.2s' }}>
             Formuga <br /> 
             <span className="text-slate-300 italic font-light text-5xl tracking-tight">Forum Muda Mudi Genting Utara.</span>
           </h1>
-          <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed font-light">
+          <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed font-light animate-fade-in-up"
+             style={{ animationDelay: '0.4s' }}>
             Merajut Kebersamaan, Menggapai Harapan. <br />
             Wadah kolaborasi pemuda untuk masa depan desa yang lebih cerah.
           </p>
         </div>
 
         {/* Floating Indicator */}
-        <div className="absolute bottom-12 flex flex-col items-center gap-4 text-slate-300">
+        <div className="absolute bottom-12 flex flex-col items-center gap-4 text-slate-300 animate-fade-in-up"
+             style={{ animationDelay: '0.6s' }}>
           <span className="text-[10px] font-bold tracking-[0.3em] uppercase">Scroll</span>
           <ArrowDown size={16} className="animate-bounce" />
         </div>
       </section>
 
       {/* SEJARAH - LARGE & CLEAN */}
-      <section id="tentang" className="py-32 px-8 bg-slate-50">
+      <section id="sejarah" className={`py-32 px-8 bg-slate-50 ${visibleSections['sejarah'] ? 'animate-fade-in-up' : 'opacity-0'}`}>
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20">
           <h2 className="text-4xl font-bold tracking-tight">Sejarah Kami.</h2>
           <p className="text-xl leading-relaxed text-slate-600 font-light italic">
@@ -102,7 +173,7 @@ export default function LandingPage() {
       </section>
 
       {/* TUJUAN - GRID LAYOUT */}
-      <section className="py-32 px-8">
+      <section id="tujuan" className="py-32 px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-3 gap-1px bg-slate-100 border border-slate-100">
             {[
@@ -110,7 +181,11 @@ export default function LandingPage() {
               { title: "Peran Aktif", desc: "Mendorong partisipasi muda-mudi dalam pembangunan ekonomi desa." },
               { title: "Karakter", desc: "Membentuk generasi berdaya saing, berakhlak, dan peduli lingkungan." },
             ].map((item, i) => (
-              <div key={i} className="bg-white p-16 group hover:bg-slate-50 transition-colors">
+              <div 
+                key={i} 
+                className={`bg-white p-16 group hover:bg-slate-50 transition-colors ${visibleSections['tujuan'] ? 'animate-fade-in-up' : 'opacity-0'}`}
+                style={{ animationDelay: visibleSections['tujuan'] ? `${i * 0.15}s` : '0s' }}
+              >
                 <span className="text-slate-300 font-mono text-sm block mb-10">0{i+1}</span>
                 <h3 className="text-2xl font-bold mb-4 tracking-tight">{item.title}</h3>
                 <p className="text-slate-500 leading-relaxed font-light">{item.desc}</p>
@@ -121,7 +196,7 @@ export default function LandingPage() {
       </section>
 
       {/* VISI MISI */}
-      <section id="visi" className="py-32 px-8 bg-slate-900 text-white rounded-[3rem] mx-4 mb-4">
+      <section id="visi" className={`py-32 px-8 bg-slate-900 text-white rounded-[3rem] mx-4 mb-4 ${visibleSections['visi'] ? 'animate-fade-in-up' : 'opacity-0'}`}>
         <div className="max-w-7xl mx-auto">
           <div className="mb-24">
             <h2 className="text-slate-500 font-bold uppercase tracking-widest text-xs mb-6">Visi</h2>
@@ -139,7 +214,11 @@ export default function LandingPage() {
               { t: "Kreativitas", d: "Mendorong karya nyata melalui inovasi teknologi dan seni." },
               { t: "Kemitraan", d: "Kolaborasi strategis dengan berbagai organisasi dan komunitas." },
             ].map((misi, i) => (
-              <div key={i} className="flex gap-6 border-t border-slate-800 pt-8">
+              <div 
+                key={i} 
+                className={`flex gap-6 border-t border-slate-800 pt-8 ${visibleSections['visi'] ? 'animate-fade-in-up' : 'opacity-0'}`}
+                style={{ animationDelay: visibleSections['visi'] ? `${i * 0.15}s` : '0s' }}
+              >
                 <ArrowRight className="text-slate-600 shrink-0" size={20} />
                 <div>
                   <h4 className="font-bold mb-2 tracking-tight">{misi.t}</h4>
@@ -152,7 +231,7 @@ export default function LandingPage() {
       </section>
 
       {/* KONTAK & FOOTER */}
-      <footer id="kontak" className="py-32 px-8">
+      <footer id="kontak" className={`py-32 px-8 ${visibleSections['kontak'] ? 'animate-fade-in-up' : 'opacity-0'}`}>
         <div className="max-w-7xl mx-auto border-t border-slate-100 pt-32">
           <div className="flex flex-col md:flex-row justify-between gap-20">
             <div className="max-w-md">
