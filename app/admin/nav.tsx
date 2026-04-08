@@ -1,12 +1,32 @@
 'use client';
-import React, { useState } from 'react';
-import { Home, User, Users, TrendingUp, TrendingDown, History, Menu, X } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { Home, User, Users, TrendingUp, TrendingDown, History, Menu, X, LogOut } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const DashboardNavbar = () => {
     const pathname = usePathname();
+    const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
+    const [user, setUser] = useState<any>(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const res = await fetch("/api/auth/session", {
+                    credentials: "include",
+                });
+                
+                if (!res.ok) return;
+                
+                const data = await res.json();
+                setUser(data.user || null);
+            } catch (err) {
+                console.error("Fetch user error:", err);
+            }
+        };
+        fetchUser();
+    }, []);
 
     const menuItems = [
         { id: 'beranda', label: 'Beranda', icon: Home, href: '/admin/beranda' },
@@ -18,6 +38,19 @@ const DashboardNavbar = () => {
     ];
 
     const isActive = (href: string) => pathname === href;
+
+    const handleLogout = async () => {
+        try {
+            await fetch("/api/auth/sign-out", {
+                method: "POST",
+                credentials: "include",
+            });
+            router.push("/login");
+        } catch (err) {
+            console.error("Logout error:", err);
+            router.push("/login");
+        }
+    };
 
     return (
         <>
@@ -72,15 +105,26 @@ const DashboardNavbar = () => {
                     })}
                 </nav>
 
-                {/* Info User Simple di bawah Sidebar */}
-                <div className="absolute bottom-8 left-6 right-6 pt-6 border-t border-slate-900">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold">AD</div>
-                        <div className="overflow-hidden">
-                            <p className="text-xs font-bold truncate">Admin Formuga</p>
-                            <p className="text-[10px] text-slate-500 truncate">admin@formuga.com</p>
+                {/* User Info & Logout */}
+                <div className="absolute bottom-8 left-6 right-6 pt-6 border-t border-slate-900 space-y-4">
+                    {user && (
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold">
+                                {user.username?.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="overflow-hidden">
+                                <p className="text-xs font-bold truncate">{user.username}</p>
+                                <p className="text-[10px] text-slate-500 truncate capitalize">{user.role}</p>
+                            </div>
                         </div>
-                    </div>
+                    )}
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium transition-colors text-white"
+                    >
+                        <LogOut size={16} />
+                        Logout
+                    </button>
                 </div>
             </aside>
         </>

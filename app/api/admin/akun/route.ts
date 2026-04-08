@@ -1,5 +1,5 @@
 import { db } from "@/src/db";
-import { users } from "@/src/db/schema";
+import { user } from "@/auth-schema";
 import { desc } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { hashPassword } from "@/lib/password";
@@ -11,7 +11,7 @@ export async function GET() {
         throw new Error("Database connection not established");
         }
 
-        const data = await db.select().from(users).orderBy(desc(users.createdAt));
+        const data = await db.select().from(user).orderBy(desc(user.createdAt));
         
         // Pastikan selalu mengembalikan array
         return NextResponse.json(data || []);
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
         console.log("Password berhasil di-hash");
 
         // Simpan ke database dengan password yang sudah di-hash
-        const result = await db.insert(users).values({
+        const result = await db.insert(user).values({
             username: body.username,
             password: hashedPassword,
             role: body.role || "view",

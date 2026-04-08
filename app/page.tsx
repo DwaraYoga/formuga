@@ -139,16 +139,16 @@ export default function LandingPage() {
       <section className="relative h-screen flex flex-col items-center justify-center text-center px-6">
         <div className="space-y-6 max-w-5xl">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 animate-fade-in-scale"
-               style={{ animationDelay: '0s' }}>
+              style={{ animationDelay: '0s' }}>
             Official Community Website
           </div>
           <h1 className="text-6xl md:text-8xl font-black tracking-[calc(-0.05em)] leading-none text-slate-900 animate-fade-in-up"
               style={{ animationDelay: '0.2s' }}>
             Formuga <br /> 
-            <span className="text-slate-300 italic font-light text-5xl tracking-tight">Forum Muda Mudi Genting Utara.</span>
+            <span className="text-slate-800 italic font-light text-5xl tracking-tight">Forum Muda Mudi Genting Utara.</span>
           </h1>
           <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed font-light animate-fade-in-up"
-             style={{ animationDelay: '0.4s' }}>
+            style={{ animationDelay: '0.4s' }}>
             Merajut Kebersamaan, Menggapai Harapan. <br />
             Wadah kolaborasi pemuda untuk masa depan desa yang lebih cerah.
           </p>
@@ -156,7 +156,7 @@ export default function LandingPage() {
 
         {/* Floating Indicator */}
         <div className="absolute bottom-12 flex flex-col items-center gap-4 text-slate-300 animate-fade-in-up"
-             style={{ animationDelay: '0.6s' }}>
+            style={{ animationDelay: '0.6s' }}>
           <span className="text-[10px] font-bold tracking-[0.3em] uppercase">Scroll</span>
           <ArrowDown size={16} className="animate-bounce" />
         </div>

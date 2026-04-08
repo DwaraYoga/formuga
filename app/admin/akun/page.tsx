@@ -21,8 +21,8 @@ export default function AkunPage() {
             if (res.ok && Array.isArray(result)) {
                 setData(result);
             } else {
-                console.error("API Error Response:", result);
-                setData([]); // Kembalikan ke array kosong jika server kirim error
+                // console.error("API Error Response:", result);
+                setData([]);
             }
         } catch (err) {
             console.error("Fetch Error:", err);
