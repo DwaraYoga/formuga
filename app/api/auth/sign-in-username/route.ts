@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
             userId: foundUser.id,
             token: sessionToken,
             expiresAt: expiresAt,
-            ipAddress: request.headers.get("x-forwarded-for") || request.ip || "127.0.0.1",
+            ipAddress: request.headers.get("x-forwarded-for") || "127.0.0.1",
             userAgent: request.headers.get("user-agent") || "",
             createdAt: new Date(),
             updatedAt: new Date(),

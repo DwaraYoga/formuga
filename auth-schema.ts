@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { relations } from "drizzle-orm";
 import {
   mysqlTable,
@@ -12,7 +13,7 @@ import {
 } from "drizzle-orm/mysql-core";
 
 export const user = mysqlTable("user", {
-  id: varchar("id", { length: 36 }).primaryKey(),
+  id: varchar("id", { length: 36 }).primaryKey().default(randomUUID()),
   username: varchar("username", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
   role: mysqlEnum("role", ["admin", "view"]).notNull().default("view"),

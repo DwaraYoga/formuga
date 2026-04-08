@@ -1,8 +1,7 @@
 import { db } from "@/src/db";
-import { users } from "@/src/db/schema";
+import { user } from "@/auth-schema";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
-import { hashPassword } from "@/lib/password";
 
 export async function DELETE(
     req: NextRequest,
@@ -10,9 +9,9 @@ export async function DELETE(
 ) {
     try {
         const resolvedParams = await params;
-        const id = parseInt(resolvedParams.id);
+        const id = resolvedParams.id;
 
-        await db.delete(users).where(eq(users.id, id));
+        await db.delete(user).where(eq(user.id, id));
 
         return NextResponse.json({ message: "Data berhasil dihapus" });
     } catch (error: any) {

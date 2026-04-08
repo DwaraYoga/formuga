@@ -3,6 +3,8 @@ import { user } from "@/auth-schema";
 import { desc } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { hashPassword } from "@/lib/password";
+import { randomUUID } from "crypto";
+
 
 export async function GET() {
     try {
@@ -45,6 +47,7 @@ export async function POST(req: Request) {
 
         // Simpan ke database dengan password yang sudah di-hash
         const result = await db.insert(user).values({
+            id: randomUUID(),
             username: body.username,
             password: hashedPassword,
             role: body.role || "view",
