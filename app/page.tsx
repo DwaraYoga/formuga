@@ -45,6 +45,46 @@ const styles = `
 export default function LandingPage() {
   const [isVisible, setIsVisible] = useState(false);
   const [visibleSections, setVisibleSections] = useState<{ [key: string]: boolean }>({});
+  const [data, setData] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          "https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=34.02.03.2001"
+        );
+        const result = await res.json();
+        console.log("API Response:", result);
+        const cuacaData = result.data[0].cuaca.flat();
+        setData(cuacaData);
+      } catch (err) {
+        console.error("Fetch Error:", err);
+      } finally {
+        console.log("Fetch attempt completed");
+      }
+    };
+
+    fetchData();
+  }, []);
+
+const getItemsPerPage = () => {
+    if (typeof window === 'undefined') return 5;
+    if (window.innerWidth < 640) return 2;
+    if (window.innerWidth < 1024) return 3;
+    return 5;
+  };
+
+  const itemsPerPage = getItemsPerPage();
+  const maxIndex = Math.max(0, data.length - itemsPerPage);
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev >= maxIndex ? prev : prev + 1));
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev <= 0 ? 0 : prev - 1));
+  };
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -126,7 +166,7 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 border-b border-slate-50 bg-white/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
-          <span className="font-bold tracking-tighter text-xl">FORMUGA</span>
+          <a href="/admin" className="font-bold tracking-tighter text-xl">FORMUGA</a>
           <div className="flex gap-8 text-sm font-medium text-slate-500">
             <a href="#sejarah" className="hover:text-black transition">Profil</a>
             <a href="#visi" className="hover:text-black transition">Visi Misi</a>
@@ -159,6 +199,99 @@ export default function LandingPage() {
             style={{ animationDelay: '0.6s' }}>
           <span className="text-[10px] font-bold tracking-[0.3em] uppercase">Scroll</span>
           <ArrowDown size={16} className="animate-bounce" />
+        </div>
+      </section>
+
+      <section id="bmkg" className={`py-16 px-4 bg-slate-50 ${visibleSections['sejarah'] ? 'animate-fade-in-up' : 'opacity-0'}`}>
+        <div className="max-w-7xl mx-auto">
+          
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800">Prakiraan Cuaca</h2>
+            <p className="text-blue-600 font-medium">Kelurahan Tirtomulyo</p>
+          </div>
+
+          {/* Container Utama dengan padding horizontal agar tombol tidak terpotong */}
+          <div className="relative px-2 sm:px-12"> 
+            {data.length > 0 ? (
+              <>
+                {/* Tombol Navigasi Kiri */}
+                <button
+                  onClick={prevSlide}
+                  disabled={currentIndex === 0}
+                  className={`absolute left-0 top-1/2 -translate-y-1/2 z-30 p-2 md:p-3 bg-white shadow-lg rounded-full transition-all duration-300 border border-slate-100 ${
+                    currentIndex === 0 ? 'opacity-0 scale-90 pointer-events-none' : 'opacity-100 hover:bg-blue-600 hover:text-white'
+                  }`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+
+                {/* Viewport Mask (Hanya bagian ini yang overflow-hidden) */}
+                <div className="overflow-hidden py-4"> 
+                  <div 
+                    className="flex transition-transform duration-500 ease-out"
+                    style={{ 
+                      transform: `translateX(-${currentIndex * (100 / (window.innerWidth < 768 ? 2 : 5))}%)` 
+                    }}
+                  >
+                    {data.map((item, index) => (
+                      <div
+                        key={index}
+                        className="w-1/2 md:w-1/5 flex-none px-2"
+                      >
+                        <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                          <img
+                            src={item.image}
+                            alt={item.weather_desc}
+                            className="w-12 h-12 md:w-14 md:h-14 mb-3 object-contain"
+                          />
+                          <span className="font-bold text-slate-700 text-sm md:text-base">
+                            {new Date(item.local_datetime).toLocaleTimeString("id-ID", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </span>
+                          <span className="font-bold text-slate-700 text-sm md:text-base">
+                            {new Date(item.local_datetime).toLocaleDateString("id-ID", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric"
+                            })}
+                          </span>
+                          <span className="text-[10px] md:text-xs text-blue-500 font-semibold uppercase tracking-wider mb-2">
+                            {item.weather_desc}
+                          </span>
+                          <div className="flex gap-2 text-[10px] md:text-xs text-slate-500 font-medium border-t border-slate-50 pt-2 w-full justify-center">
+                            <span>🌡️ {item.t}°</span>
+                            <span className="text-slate-300">|</span>
+                            <span>💧 {item.hu}%</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tombol Navigasi Kanan */}
+                <button
+                  onClick={nextSlide}
+                  disabled={currentIndex >= data.length - (window.innerWidth < 768 ? 2 : 5)}
+                  className={`absolute right-0 top-1/2 -translate-y-1/2 z-30 p-2 md:p-3 bg-white shadow-lg rounded-full transition-all duration-300 border border-slate-100 ${
+                    currentIndex >= data.length - (window.innerWidth < 768 ? 2 : 5) ? 'opacity-0 scale-90 pointer-events-none' : 'opacity-100 hover:bg-blue-600 hover:text-white'
+                  }`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </>
+            ) : (
+              <div className="flex justify-center py-12">
+                <div className="animate-pulse text-slate-400 font-medium">Sinkronisasi data BMKG...</div>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 

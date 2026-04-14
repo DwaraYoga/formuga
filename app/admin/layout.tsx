@@ -3,6 +3,22 @@ import { Metadata } from "next";
 import DashboardNavbar from "../admin/nav";
 import { usePathname } from 'next/navigation';
 
+const style = `
+    @keyframes fadeIn {
+        from { 
+            opacity: 0;
+            transform: translateX(20px); 
+        }
+    }     
+        to { 
+            opacity: 1; 
+            transform: translateX(0); 
+        }
+    }
+    .fade-in {
+        animation: fadeIn 0.8s ease-out forwards;
+    }
+`;
 
 export default function DashboardLayout({
     children,
@@ -20,7 +36,7 @@ export default function DashboardLayout({
     }
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen">
+        <div className="flex flex-col lg:flex-row min-h-screen fade-in">
             {/* Sidebar / Mobile Nav */}
             <DashboardNavbar />
             
